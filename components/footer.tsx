@@ -9,21 +9,14 @@ export function Footer() {
             <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary text-primary-foreground">
               <Droplets className="w-4 h-4" />
             </div>
-            <span className="font-bold">FloodAI</span>
+            <span className="font-bold">Buanjir</span>
           </div>
 
           <p className="text-sm text-muted-foreground text-center">
-            © 2025 FloodAI. Powered by U-Net & MobileNetV2 Deep Learning
+            © 2025 Buanjir. Powered by U-Net & MobileNetV2 Deep Learning
           </p>
 
-          <div className="flex gap-6">
-            <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              GitHub
-            </a>
-            <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              Dokumentasi
-            </a>
-          </div>
+          
         </div>
       </div>
     </footer>

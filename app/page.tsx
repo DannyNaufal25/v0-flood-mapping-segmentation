@@ -12,7 +12,7 @@ export default function HomePage() {
         <section className="container mx-auto px-4 py-8 sm:py-12 md:py-20">
           <div className="max-w-4xl mx-auto text-center mb-8 sm:mb-12 space-y-3 sm:space-y-4">
             <div className="inline-block px-3 sm:px-4 py-1 sm:py-1.5 bg-primary/10 border border-primary/20 rounded-full text-xs sm:text-sm font-medium text-primary mb-3 sm:mb-4">
-              AI-Powered Flood Analysis
+              Flood Segmentation
             </div>
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-balance px-4">
               Segmentasi Gambar Banjir dengan <span className="text-primary">Deep Learning</span>
