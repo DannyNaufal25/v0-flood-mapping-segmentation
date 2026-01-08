@@ -16,7 +16,7 @@ export function BackendStatus() {
 
   const checkBackend = async () => {
     try {
-      const possibleEndpoints = ["/", "/health", "/api/health", "/predict", "/segment"]
+      const possibleEndpoints = ["/", "/predict"]
       const foundEndpoints: string[] = []
 
       for (const endpoint of possibleEndpoints) {
