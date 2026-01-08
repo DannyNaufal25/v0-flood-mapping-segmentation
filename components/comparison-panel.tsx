@@ -3,10 +3,9 @@
 import { useState } from "react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Download } from "lucide-react"
+import { Download, Clock } from "lucide-react"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import type { SegmentationResult } from "./segmentation-tool"
-import { MetricsDisplay } from "./metrics-display"
 
 interface ComparisonPanelProps {
   unetResult: SegmentationResult
@@ -26,7 +25,7 @@ export function ComparisonPanel({ unetResult, mobilenetResult }: ComparisonPanel
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {/* Toggle View Mode */}
       <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as "overlay" | "mask")} className="w-full">
         <TabsList className="grid w-full grid-cols-2">
@@ -38,7 +37,7 @@ export function ComparisonPanel({ unetResult, mobilenetResult }: ComparisonPanel
       {/* Comparison Grid */}
       <div className="grid sm:grid-cols-2 gap-4">
         {/* U-Net Results */}
-        <Card className="p-4 space-y-3 bg-muted/30">
+        <Card className="p-4 space-y-3 bg-muted/30 border-2">
           <div className="flex items-center justify-between">
             <h4 className="font-semibold text-sm">U-Net</h4>
             <Button
@@ -54,21 +53,24 @@ export function ComparisonPanel({ unetResult, mobilenetResult }: ComparisonPanel
               <Download className="w-4 h-4" />
             </Button>
           </div>
-          <div className="relative aspect-video bg-background rounded-lg overflow-hidden border">
+          <div className="relative aspect-video bg-background rounded-lg overflow-hidden border shadow-sm">
             <img
               src={viewMode === "overlay" ? unetResult.segmentedImage : unetResult.maskImage}
               alt="U-Net Result"
               className="w-full h-full object-contain"
             />
           </div>
-          <div className="space-y-2">
-            <MetricsDisplay metrics={unetResult.metrics} compact />
-            <p className="text-xs text-muted-foreground">Processing Time: {unetResult.processingTime.toFixed(2)}s</p>
+          {/* Processing Time Only */}
+          <div className="flex items-center justify-center gap-2 p-2 bg-background/50 rounded-md border text-muted-foreground">
+             <Clock className="w-4 h-4" />
+             <p className="text-xs font-medium">
+               Waktu Proses: <span className="text-foreground font-bold">{unetResult.processingTime.toFixed(2)}s</span>
+             </p>
           </div>
         </Card>
 
         {/* U-Net + MobileNetV2 Results */}
-        <Card className="p-4 space-y-3 bg-muted/30">
+        <Card className="p-4 space-y-3 bg-muted/30 border-2">
           <div className="flex items-center justify-between">
             <h4 className="font-semibold text-sm">U-Net + MobileNetV2</h4>
             <Button
@@ -84,67 +86,92 @@ export function ComparisonPanel({ unetResult, mobilenetResult }: ComparisonPanel
               <Download className="w-4 h-4" />
             </Button>
           </div>
-          <div className="relative aspect-video bg-background rounded-lg overflow-hidden border">
+          <div className="relative aspect-video bg-background rounded-lg overflow-hidden border shadow-sm">
             <img
               src={viewMode === "overlay" ? mobilenetResult.segmentedImage : mobilenetResult.maskImage}
               alt="U-Net + MobileNetV2 Result"
               className="w-full h-full object-contain"
             />
           </div>
-          <div className="space-y-2">
-            <MetricsDisplay metrics={mobilenetResult.metrics} compact />
-            <p className="text-xs text-muted-foreground">
-              Processing Time: {mobilenetResult.processingTime.toFixed(2)}s
-            </p>
+           {/* Processing Time Only */}
+           <div className="flex items-center justify-center gap-2 p-2 bg-background/50 rounded-md border text-muted-foreground">
+             <Clock className="w-4 h-4" />
+             <p className="text-xs font-medium">
+               Waktu Proses: <span className="text-foreground font-bold">{mobilenetResult.processingTime.toFixed(2)}s</span>
+             </p>
           </div>
         </Card>
       </div>
 
-      {/* Metrics Comparison */}
-      <Card className="p-4 bg-muted/30">
-        <h4 className="font-semibold mb-3 text-sm">Perbandingan Metrik</h4>
-        <div className="grid grid-cols-3 gap-4 text-center">
-          <div>
-            <p className="text-xs text-muted-foreground mb-2">IoU Score</p>
-            <div className="space-y-1">
-              <p className="text-sm font-medium">
-                U-Net: <span className="text-primary">{(unetResult.metrics.iou * 100).toFixed(1)}%</span>
-              </p>
-              <p className="text-sm font-medium">
-                +MobileNet: <span className="text-primary">{(mobilenetResult.metrics.iou * 100).toFixed(1)}%</span>
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Δ {((mobilenetResult.metrics.iou - unetResult.metrics.iou) * 100).toFixed(1)}%
-              </p>
+      {/* Metrics Comparison (Global Specs) */}
+      <Card className="p-6 bg-card shadow-sm border">
+        <div className="mb-6">
+          <h4 className="font-bold text-lg flex items-center gap-2">
+            📊 Spesifikasi Performa Model
+          </h4>
+          <p className="text-sm text-muted-foreground">
+            Perbandingan rata-rata metrik evaluasi pada dataset testing (Global Metrics).
+          </p>
+        </div>
+
+        <div className="grid grid-cols-3 gap-8 text-center divide-x">
+          {/* IoU Score */}
+          <div className="space-y-2">
+            <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Mean IoU</p>
+            <div className="space-y-1 mt-2">
+              <div className="flex justify-between items-center px-4 max-w-[200px] mx-auto">
+                <span className="text-sm text-muted-foreground">U-Net</span>
+                <span className="font-mono font-bold">{(unetResult.metrics.iou * 100).toFixed(1)}%</span>
+              </div>
+              <div className="flex justify-between items-center px-4 max-w-[200px] mx-auto">
+                <span className="text-sm font-semibold text-primary">+MobileNet</span>
+                <span className="font-mono font-bold text-primary">{(mobilenetResult.metrics.iou * 100).toFixed(1)}%</span>
+              </div>
+              <div className="pt-1">
+                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
+                  + {((mobilenetResult.metrics.iou - unetResult.metrics.iou) * 100).toFixed(1)}%
+                </span>
+              </div>
             </div>
           </div>
-          <div>
-            <p className="text-xs text-muted-foreground mb-2">Dice Score</p>
-            <div className="space-y-1">
-              <p className="text-sm font-medium">
-                U-Net: <span className="text-primary">{(unetResult.metrics.dice * 100).toFixed(1)}%</span>
-              </p>
-              <p className="text-sm font-medium">
-                +MobileNet: <span className="text-primary">{(mobilenetResult.metrics.dice * 100).toFixed(1)}%</span>
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Δ {((mobilenetResult.metrics.dice - unetResult.metrics.dice) * 100).toFixed(1)}%
-              </p>
+
+          {/* Dice Score */}
+          <div className="space-y-2">
+            <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Mean Dice</p>
+            <div className="space-y-1 mt-2">
+               <div className="flex justify-between items-center px-4 max-w-[200px] mx-auto">
+                <span className="text-sm text-muted-foreground">U-Net</span>
+                <span className="font-mono font-bold">{(unetResult.metrics.dice * 100).toFixed(1)}%</span>
+              </div>
+              <div className="flex justify-between items-center px-4 max-w-[200px] mx-auto">
+                <span className="text-sm font-semibold text-primary">+MobileNet</span>
+                <span className="font-mono font-bold text-primary">{(mobilenetResult.metrics.dice * 100).toFixed(1)}%</span>
+              </div>
+               <div className="pt-1">
+                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
+                  + {((mobilenetResult.metrics.dice - unetResult.metrics.dice) * 100).toFixed(1)}%
+                </span>
+              </div>
             </div>
           </div>
-          <div>
-            <p className="text-xs text-muted-foreground mb-2">Pixel Accuracy</p>
-            <div className="space-y-1">
-              <p className="text-sm font-medium">
-                U-Net: <span className="text-primary">{(unetResult.metrics.pixelAccuracy * 100).toFixed(1)}%</span>
-              </p>
-              <p className="text-sm font-medium">
-                +MobileNet:{" "}
-                <span className="text-primary">{(mobilenetResult.metrics.pixelAccuracy * 100).toFixed(1)}%</span>
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Δ {((mobilenetResult.metrics.pixelAccuracy - unetResult.metrics.pixelAccuracy) * 100).toFixed(1)}%
-              </p>
+
+          {/* Pixel Accuracy */}
+          <div className="space-y-2">
+            <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Pixel Accuracy</p>
+            <div className="space-y-1 mt-2">
+              <div className="flex justify-between items-center px-4 max-w-[200px] mx-auto">
+                <span className="text-sm text-muted-foreground">U-Net</span>
+                <span className="font-mono font-bold">{(unetResult.metrics.pixelAccuracy * 100).toFixed(1)}%</span>
+              </div>
+              <div className="flex justify-between items-center px-4 max-w-[200px] mx-auto">
+                <span className="text-sm font-semibold text-primary">+MobileNet</span>
+                <span className="font-mono font-bold text-primary">{(mobilenetResult.metrics.pixelAccuracy * 100).toFixed(1)}%</span>
+              </div>
+               <div className="pt-1">
+                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
+                  + {((mobilenetResult.metrics.pixelAccuracy - unetResult.metrics.pixelAccuracy) * 100).toFixed(1)}%
+                </span>
+              </div>
             </div>
           </div>
         </div>
