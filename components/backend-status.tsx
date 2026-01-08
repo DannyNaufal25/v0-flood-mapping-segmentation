@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react"
 
-const PYTHON_BACKEND_URL = "https://composed-levels-prepaid-robust.trycloudflare.com"
+const PYTHON_BACKEND_URL = "https://valid-cartoons-protocols-deaths.trycloudflare.com"
 
 export function BackendStatus() {
   const [status, setStatus] = useState<"checking" | "online" | "offline">("checking")
