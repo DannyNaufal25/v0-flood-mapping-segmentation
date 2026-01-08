@@ -10,27 +10,28 @@ interface MetricsDisplayProps {
   }
   model?: ModelType
   compact?: boolean
+  isGlobalContext?: boolean // Prop baru untuk memperjelas konteks
 }
 
-export function MetricsDisplay({ metrics, model, compact = false }: MetricsDisplayProps) {
+export function MetricsDisplay({ metrics, model, compact = false, isGlobalContext = false }: MetricsDisplayProps) {
   const metricsData = [
     {
-      label: "IoU Score",
+      label: "Mean IoU", // Diubah jadi Mean agar jelas rata-rata
       value: metrics.iou,
       icon: Grid3x3,
-      description: "Intersection over Union",
+      description: "Rata-rata Intersection over Union",
     },
     {
-      label: "Dice Score",
+      label: "Mean Dice Score",
       value: metrics.dice,
       icon: Target,
-      description: "F1 Score for segmentation",
+      description: "Rata-rata F1 Score segmentasi",
     },
     {
       label: "Pixel Accuracy",
       value: metrics.pixelAccuracy,
       icon: TrendingUp,
-      description: "Overall accuracy",
+      description: "Akurasi piksel keseluruhan",
     },
   ]
 
@@ -57,29 +58,36 @@ export function MetricsDisplay({ metrics, model, compact = false }: MetricsDispl
     <div className="space-y-3">
       {model && (
         <div className="flex items-center justify-between">
-          <h4 className="text-sm font-semibold">Metrik Performa</h4>
-          <span className="text-xs text-muted-foreground">{model === "unet" ? "U-Net" : "U-Net + MobileNetV2"}</span>
+          <h4 className="text-sm font-semibold">
+            {isGlobalContext ? "Spesifikasi Rata-rata Model" : "Metrik Performa"}
+          </h4>
+          <span className="text-xs font-mono bg-muted px-2 py-0.5 rounded text-muted-foreground">
+            {model === "unet" ? "Architecture: U-Net" : "Architecture: U-Net + MobileNetV2"}
+          </span>
         </div>
       )}
 
-      <div className="grid gap-2">
+      <div className="grid sm:grid-cols-3 gap-3">
         {metricsData.map((metric) => {
           const Icon = metric.icon
           const percentage = (metric.value * 100).toFixed(1)
 
           return (
-            <Card key={metric.label} className="p-3 bg-muted/50">
+            <Card key={metric.label} className="p-3 bg-muted/30 border shadow-sm">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
-                  <Icon className="w-4 h-4 text-primary" />
-                  <span className="text-sm font-medium">{metric.label}</span>
+                  <div className="p-1.5 bg-background rounded-md border">
+                    <Icon className="w-4 h-4 text-primary" />
+                  </div>
+                  <span className="text-sm font-medium text-muted-foreground">{metric.label}</span>
                 </div>
-                <span className="text-lg font-bold text-primary">{percentage}%</span>
               </div>
-              <div className="w-full bg-secondary/30 rounded-full h-1.5 overflow-hidden">
+              <div className="mb-2">
+                 <span className="text-2xl font-bold tracking-tight">{percentage}%</span>
+              </div>
+              <div className="w-full bg-secondary rounded-full h-1.5 overflow-hidden">
                 <div className="bg-primary h-full rounded-full transition-all" style={{ width: `${percentage}%` }} />
               </div>
-              <p className="text-xs text-muted-foreground mt-1">{metric.description}</p>
             </Card>
           )
         })}
