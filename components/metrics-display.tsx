@@ -10,13 +10,13 @@ interface MetricsDisplayProps {
   }
   model?: ModelType
   compact?: boolean
-  isGlobalContext?: boolean // Prop baru untuk memperjelas konteks
+  isGlobalContext?: boolean
 }
 
 export function MetricsDisplay({ metrics, model, compact = false, isGlobalContext = false }: MetricsDisplayProps) {
   const metricsData = [
     {
-      label: "Mean IoU", // Diubah jadi Mean agar jelas rata-rata
+      label: "Mean IoU",
       value: metrics.iou,
       icon: Grid3x3,
       description: "Rata-rata Intersection over Union",
@@ -61,13 +61,18 @@ export function MetricsDisplay({ metrics, model, compact = false, isGlobalContex
           <h4 className="text-sm font-semibold">
             {isGlobalContext ? "Spesifikasi Rata-rata Model" : "Metrik Performa"}
           </h4>
-          <span className="text-xs font-mono bg-muted px-2 py-0.5 rounded text-muted-foreground">
-            {model === "unet" ? "Architecture: U-Net" : "Architecture: U-Net + MobileNetV2"}
+          <span className="text-xs font-mono bg-muted px-2 py-0.5 rounded text-muted-foreground hidden sm:inline-block">
+            {model === "unet" ? "Arch: U-Net" : "Arch: U-Net + MobileNetV2"}
+          </span>
+          {/* Mobile version for Architecture label */}
+          <span className="text-xs font-mono bg-muted px-2 py-0.5 rounded text-muted-foreground sm:hidden">
+            {model === "unet" ? "U-Net" : "MobileNet"}
           </span>
         </div>
       )}
 
-      <div className="grid sm:grid-cols-3 gap-3">
+      {/* Grid Responsive: 1 Kolom (Mobile), 3 Kolom (Tablet/PC) */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {metricsData.map((metric) => {
           const Icon = metric.icon
           const percentage = (metric.value * 100).toFixed(1)

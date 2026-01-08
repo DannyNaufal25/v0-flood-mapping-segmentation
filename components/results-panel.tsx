@@ -2,8 +2,8 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card" // Tambah import Card
-import { Download, Eye, EyeOff, Clock, Info } from "lucide-react" // Tambah icon Clock & Info
+import { Card } from "@/components/ui/card"
+import { Download, Eye, EyeOff, Clock, Info } from "lucide-react"
 import type { SegmentationResult, ModelType } from "./segmentation-tool"
 import { MetricsDisplay } from "./metrics-display"
 
@@ -25,14 +25,15 @@ export function ResultsPanel({ results, model }: ResultsPanelProps) {
   }
 
   return (
-    <div className="space-y-8">
-      {/* BAGIAN 1: HASIL INFERENSI (GAMBAR & WAKTU) */}
+    <div className="space-y-6 sm:space-y-8">
+      {/* BAGIAN 1: HASIL INFERENSI */}
       <section className="space-y-4">
-        <div className="flex items-center justify-between">
+        {/* Header Responsive: Stack vertikal di mobile */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0">
             <h3 className="text-lg font-semibold flex items-center gap-2">
                 📸 Hasil Deteksi
             </h3>
-             <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/50 px-3 py-1 rounded-full border">
+             <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/50 px-3 py-1.5 rounded-full border w-fit">
                 <Clock className="w-4 h-4" />
                 <span>Waktu Proses: <strong className="text-foreground">{results.processingTime.toFixed(2)}s</strong></span>
             </div>
@@ -48,7 +49,7 @@ export function ResultsPanel({ results, model }: ResultsPanelProps) {
             <Button
                 size="sm"
                 variant="secondary"
-                className="absolute top-2 sm:top-3 right-2 sm:right-3 text-xs sm:text-sm shadow-sm"
+                className="absolute top-2 right-2 text-xs shadow-sm"
                 onClick={() => setShowMask(!showMask)}
             >
                 {showMask ? (
@@ -66,6 +67,7 @@ export function ResultsPanel({ results, model }: ResultsPanelProps) {
             </div>
         </Card>
 
+        {/* Tombol Download Responsive */}
         <div className="flex flex-col sm:flex-row gap-2">
             <Button
             variant="outline"
@@ -88,14 +90,13 @@ export function ResultsPanel({ results, model }: ResultsPanelProps) {
         </div>
       </section>
 
-      {/* BAGIAN 2: SPESIFIKASI MODEL (DATA GLOBAL/STATIS) */}
+      {/* BAGIAN 2: SPESIFIKASI MODEL */}
       <section className="space-y-3 pt-4 border-t">
         <div className="flex items-center gap-2 text-muted-foreground mb-2">
              <Info className="w-4 h-4" />
              <p className="text-sm font-medium">Referensi Performa Model (Dataset Testing)</p>
         </div>
         
-        {/* Pass prop isGlobalContext agar MetricsDisplay tahu ini data global */}
         <MetricsDisplay metrics={results.metrics} model={model} isGlobalContext={true} />
       </section>
     </div>
