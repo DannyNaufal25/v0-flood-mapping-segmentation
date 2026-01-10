@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 
-const PYTHON_BACKEND_URL = "https://inquire-lung-minimize-ben.trycloudflare.com"
+const PYTHON_BACKEND_URL = "https://row-housewives-patterns-large.trycloudflare.com"
 
 export async function POST(request: NextRequest) {
   try {
